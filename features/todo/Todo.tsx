@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Todo as TodoEntity, todoApi } from "../../app/services/todo";
+import React, { useEffect, useRef, useState } from "react";
+import { TodoEntity, todoApi } from "../../app/services/todo";
 
 export const Todo: React.FC = () => {
+  const inputCreateTodoRef = useRef<HTMLInputElement>(null);
+  const [createTodo] = todoApi.useCreateTodoMutation();
   const [updateTodo] = todoApi.useUpdateTodoMutation();
   const [deleteTodo] = todoApi.useDeleteTodoMutation();
   const [selectedTodo, setSelectedTodo] = useState<TodoEntity["id"] | null>(
@@ -15,6 +17,13 @@ export const Todo: React.FC = () => {
     todoApi.useGetTodoQuery(selectedTodo!, {
       skip: selectedTodo === null,
     });
+
+  const handleCreateTodo = () => {
+    if (inputCreateTodoRef.current!.value !== "") {
+      createTodo({ name: inputCreateTodoRef.current!.value });
+      inputCreateTodoRef.current!.value = "";
+    }
+  };
 
   useEffect(() => {
     if (selectedTodo) {
@@ -66,10 +75,14 @@ export const Todo: React.FC = () => {
       ))}
       <div className="w-full flex rounded-md mt-5 shadow-md overflow-hidden">
         <input
+          ref={inputCreateTodoRef}
           type="text"
           className="block flex-auto bg-gray-100 focus:outline-none px-4 py-2"
         />
-        <button className="px-4 py-2 text-gray-500 font-semibold bg-gray-300">
+        <button
+          onClick={() => handleCreateTodo()}
+          className="px-4 py-2 text-gray-500 font-semibold bg-gray-300"
+        >
           create
         </button>
       </div>

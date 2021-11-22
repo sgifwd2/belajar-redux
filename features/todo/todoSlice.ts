@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { todoApi, Todo } from "../../app/services/todo";
+import { todoApi, TodoEntity } from "../../app/services/todo";
 
 export interface TodoState {
-  todos: Todo[] | [];
+  todos: TodoEntity[] | [];
 }
 
 const initialState: TodoState = {

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export interface Todo {
+export interface TodoEntity {
   id: string;
   name: string;
   isDone: boolean;
@@ -13,7 +13,7 @@ export const todoApi = createApi({
   }),
   tagTypes: ["Todos"],
   endpoints: (build) => ({
-    getAllTodo: build.query<Todo[], void>({
+    getAllTodo: build.query<TodoEntity[], void>({
       query: () => ({
         url: "/",
         method: "GET",
@@ -26,14 +26,22 @@ export const todoApi = createApi({
             ]
           : [{ type: "Todos", id: "LIST" }],
     }),
-    getTodo: build.query<Todo, Todo["id"]>({
+    createTodo: build.mutation<TodoEntity, { name: string }>({
+      query: (body) => ({
+        url: "/",
+        method: "POST",
+        body: { ...body, isDone: false } as Pick<TodoEntity, "name" | "isDone">,
+      }),
+      invalidatesTags: [{ type: "Todos", id: "LIST" }],
+    }),
+    getTodo: build.query<TodoEntity, TodoEntity["id"]>({
       query: (id) => ({
         url: `/${id}`,
         method: "GET",
       }),
       providesTags: (result, error, id) => [{ type: "Todos", id }],
     }),
-    updateTodo: build.mutation<Todo, Partial<Todo>>({
+    updateTodo: build.mutation<TodoEntity, Partial<TodoEntity>>({
       query: (todo) => {
         const { id, ...body } = todo;
 
@@ -47,7 +55,7 @@ export const todoApi = createApi({
         { type: "Todos", id: todo.id },
       ],
     }),
-    deleteTodo: build.mutation<Todo, Todo["id"]>({
+    deleteTodo: build.mutation<TodoEntity, TodoEntity["id"]>({
       query: (id) => ({
         url: `/${id}`,
         method: "DELETE",
