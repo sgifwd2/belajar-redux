@@ -1,18 +1,19 @@
+import { selectAuthUser } from "@app/features/auth.slice";
+import { useAppSelector } from "@app/store";
+import { auth } from "@hooks/auth";
+import { HomeLayout } from "@layouts/HomeLayout";
 import type { NextPage } from "next";
-import Head from "next/head";
 
 const Page: NextPage = () => {
-  return (
-    <div className="w-full min-h-screen bg-gray-50 flex justify-center items-center">
-      <Head>
-        <title>Create Next App</title>
-      </Head>
+  const user = useAppSelector(selectAuthUser);
 
-      <main>
-        <h1 className="text-7xl text-gray-500">Hello world</h1>
-      </main>
-    </div>
+  return (
+    <HomeLayout title="Home">
+      <div className="flex-grow w-full h-0 flex justify-center items-center">
+        <h1 className="text-7xl text-gray-500">Hello {user?.email}</h1>
+      </div>
+    </HomeLayout>
   );
 };
 
-export default Page;
+export default auth(Page);

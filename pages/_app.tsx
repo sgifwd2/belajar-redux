@@ -15,11 +15,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="w-screen min-h-screen overflow-x-hidden">
-        <Provider store={store}>
-          <Component {...pageProps} />
-        </Provider>
-      </div>
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
     </>
   );
 }
